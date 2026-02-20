@@ -1,40 +1,147 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Trophy, 
-  Activity, 
-  TrendingUp, 
-  Zap, 
-  Clock, 
-  ChevronRight, 
-  ShieldAlert,
-  BatteryMedium,
-  BatteryFull,
-  BatteryLow,
-  Bell,
-  Search
-} from 'lucide-react';
+import streamlit as st
+import pandas as pd
+import time
+import random
+from datetime import datetime
 
-const App = () => {
-  const [activeTab, setActiveTab] = useState('predictions');
-  const [selectedSport, setSelectedSport] = useState('Soccer');
+# Page Configuration
+st.set_page_config(
+    page_title="Battery Sports Predictor",
+    page_icon="⚡",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
-  // Mock data for "Air Slips" (Predictive Slips)
-  const predictions = [
-    {
-      id: 1,
-      match: "Man City vs Real Madrid",
-      time: "Tonight 21:00",
-      confidence: 92,
-      type: "High Voltage",
-      odds: "2.45",
-      market: "Over 2.5 Goals",
-      league: "Champions League",
-      status: "Analyzing Live Data"
-    },
-    {
-      id: 2,
-      match: "Lakers vs Celtics",
-      time: "Tomorrow 03:00",
+# Custom CSS for the "Battery" Branding
+st.markdown("""
+    <style>
+    .main {
+        background-color: #020617;
+    }
+    .stMetric {
+        background-color: #1e293b;
+        padding: 15px;
+        border-radius: 15px;
+        border: 1px solid #334155;
+    }
+    .prediction-card {
+        background-color: #0f172a;
+        padding: 20px;
+        border-radius: 20px;
+        border-left: 5px solid #eab308;
+        margin-bottom: 20px;
+        border-top: 1px solid #1e293b;
+        border-right: 1px solid #1e293b;
+        border-bottom: 1px solid #1e293b;
+    }
+    .live-card {
+        background-color: #0f172a;
+        padding: 20px;
+        border-radius: 20px;
+        border-left: 5px solid #ef4444;
+        margin-bottom: 20px;
+    }
+    .battery-text {
+        color: #eab308;
+        font-weight: 900;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# App Header
+col_header1, col_header2 = st.columns([2, 1])
+with col_header1:
+    st.markdown("# ⚡ BATTERY <span style='color:#eab308'>PRO</span>", unsafe_allow_html=True)
+    st.caption("AI-Driven Sports Predictions & Live Momentum Tracking")
+
+with col_header2:
+    st.write(f"📅 {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    if st.button("🔄 Refresh Signals"):
+        with st.spinner("Re-charging Battery Predictions..."):
+            time.sleep(1)
+            st.rerun()
+
+# Top Stats Row
+st.markdown("### 📊 Performance Metrics")
+col1, col2, col3, col4 = st.columns(4)
+col1.metric("Today's Accuracy", "84.2%", "+2.1%")
+col2.metric("Monthly ROI", "+148%", "High")
+col3.metric("Live Win Streak", "7 Games", "🔥")
+col4.metric("Active Signals", "14", "Stable")
+
+# Tabs for Air Slips vs Live Radar
+tab1, tab2 = st.tabs(["📑 PREDICTIVE AIR SLIPS", "📡 LIVE RADAR"])
+
+with tab1:
+    st.markdown("#### 🚀 Early Bird Predictions")
+    
+    # Mock Prediction Data
+    preds = [
+        {"match": "Man City vs Real Madrid", "market": "Over 2.5 Goals", "odds": 2.45, "charge": 92, "league": "Champions League"},
+        {"match": "Lakers vs Celtics", "market": "Lakers +4.5", "odds": 1.90, "charge": 78, "league": "NBA"},
+        {"match": "Springboks vs All Blacks", "market": "SA to Win", "odds": 1.75, "charge": 85, "league": "Rugby Championship"}
+    ]
+
+    for p in preds:
+        with st.container():
+            st.markdown(f"""
+            <div class="prediction-card">
+                <small style="color:#94a3b8">{p['league']}</small>
+                <h3 style="margin:0;">{p['match']}</h3>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
+                    <div>
+                        <p style="margin:0; font-size:12px; color:#64748b;">AI SELECTION</p>
+                        <p style="margin:0; font-weight:bold; color:#eab308;">{p['market']}</p>
+                    </div>
+                    <div style="text-align:right;">
+                        <p style="margin:0; font-size:12px; color:#64748b;">BATTERY CHARGE</p>
+                        <p style="margin:0; font-weight:bold; color:#22c55e;">{p['charge']}%</p>
+                    </div>
+                </div>
+                <hr style="opacity:0.1; margin:15px 0;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:24px; font-weight:900;">{p['odds']}</span>
+                    <button style="background-color:#eab308; border:none; padding:5px 15px; border-radius:8px; font-weight:bold;">LOCK SLIP</button>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+with tab2:
+    st.markdown("#### 🔴 Real-Time Momentum Tracking")
+    
+    # Live Game Simulation
+    live_match = "Arsenal vs Liverpool"
+    score = "1 - 1"
+    minute = "64'"
+    
+    st.markdown(f"""
+    <div class="live-card">
+        <div style="display:flex; justify-content:space-between;">
+            <span style="color:#ef4444; font-weight:bold;">● LIVE {minute}</span>
+            <span style="font-family:monospace; font-weight:bold;">{score}</span>
+        </div>
+        <h2 style="text-align:center; margin:20px 0;">{live_match}</h2>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Momentum Progress Bar
+    momentum = st.slider("AI Momentum Score", 0, 100, 88)
+    st.progress(momentum / 100)
+    st.caption(f"Arsenal is currently maintaining {momentum}% pressure in the final third.")
+    
+    st.info(f"💡 **AI Suggestion:** High probability of Arsenal Next Goal. Live Odds: **3.10**")
+
+# Footer
+st.markdown("---")
+st.markdown("""
+<div style="text-align:center; opacity:0.6;">
+    <p style="font-size:10px;">
+        OHLELEKILE FINANCIAL PROVIDER PTY(LTD) <br>
+        RESPONSIBLE GAMBLING: 0800 006 008 <br>
+        NO PERSONS UNDER 18. PREDICTIONS ARE PROBABILISTIC.
+    </p>
+</div>
+""", unsafe_allow_html=True)      time: "Tomorrow 03:00",
       confidence: 78,
       type: "Stable Power",
       odds: "1.90",
